@@ -7,16 +7,38 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
+option(CODE_FORMAT "CODE_FORMAT" OFF)
+
+if (CODE_FORMAT)
+    add_custom_target(codeformat
+      find
+        ${CMAKE_SOURCE_DIR}/src
+        -type f
+        (
+        -name "*.cpp"
+        -o
+        -name "*.h"
+        -o
+        -name "*.hpp"
+        )
+        -not -name "gnome-dbus-time-service-glue.hpp"
+        -print0
+      | xargs -0 clang-format -i
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMENT "Checking source code formatting"
+      VERBATIM
+    )
+endif()
+
 set(WARNING_OPTIONS
-        " -Wall \
+    " -Wall \
           -Wno-long-long \
           -Wno-unused-variable \
           -Werror \
           -Wno-error=deprecated-declarations \
           -fno-sanitize-recover=all \
           -fsanitize=bounds \
-          -fsanitize=signed-integer-overflow"
-    )
+          -fsanitize=signed-integer-overflow")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -28,12 +50,13 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(THREADS_PTHREAD_ARG
     "2"
-    CACHE STRING "Forcibly set by CMakeLists.txt." FORCE
-)
+    CACHE STRING "Forcibly set by CMakeLists.txt." FORCE)
 
-find_package(PkgConfig REQUIRED) # Include functions provided by PkgConfig module.
+find_package(PkgConfig REQUIRED) # Include functions provided by PkgConfig
+                                 # module.
 
-pkg_check_modules(DBUS REQUIRED dbus-c++-1) # This calls pkgconfig with appropriate arguments
+pkg_check_modules(DBUS REQUIRED dbus-c++-1) # This calls pkgconfig with
+                                            # appropriate arguments
 # Use results of pkg_check_modules() call.
 include_directories(${DBUS_INCLUDE_DIRS})
 link_directories(${DBUS_LIBRARY_DIRS})
