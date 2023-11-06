@@ -36,3 +36,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/files/gnomeDbusTimeService/run
 install(FILES ${CMAKE_SOURCE_DIR}/files/gnomeDbusTimeService/log/run
         DESTINATION /etc/sv/${PROJECT_NAME}/log
         PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE OWNER_WRITE OWNER_READ)
+install(FILES ${CMAKE_SOURCE_DIR}/files/org.freedesktop.timedate1.conf
+        DESTINATION /usr/share/dbus-1/system.d
+        PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE OWNER_WRITE OWNER_READ)
